@@ -1,4 +1,4 @@
----IT FUCKING WORKS - Shows the amount paid/percentage for each payment 
+---Shows the amount paid/percentage for each payment 
 
 SELECT 
   DISTINCT
@@ -53,43 +53,8 @@ ORDER BY claimid, name, timetofirstpayment;
 
 
 
---, claim_items.billingentrygroupid, billing_entries.groupid
-*/
 
-
-
-SELECT  
-  DISTINCT claimamount, DATE(paymentdate),
-  SUM(billing_entries.paidamount)
- FROM 
-  customers.billing_entries , customers.claim_items, customers.billing_payments
-WHERE lastclaimid = 2132206 
-AND billing_entries.lastclaimid = claim_items.claimid
-AND billing_entries.id = billing_payments.billingentryid
-
-GROUP BY   claimamount, claim_items.id, paymentdate;
-
-
-SELECT * FROM customers.claim_items
-WHERE claimid = 2132206;
-
-
-----checks what all populates
-SELECT * FROM customers.claim_items, customers.billing_entries, customers.billing_payments
-WHERE claim_items.claimid = 1168668
-AND claim_items.claimid = billing_entries.lastclaimid
-AND billing_payments.billingentryid = billing_entries.id
-
-
-SELECT  SUM(claimamount), DATE(senton)
-FROM customers.claim_items
-WHERE servicedatefrom > '2017-10-29' AND servicedateto < '2017-11-15'
-GROUP BY senton;
-
-
-
-
----IT FUCKING WORKS - Shows the amount paid/percentage for each payment 
+--- Shows the amount paid/percentage for each payment 
 
 SELECT 
   DISTINCT
@@ -134,6 +99,4 @@ GROUP BY
   
 ORDER BY claimid, name, daysToPayment;
 
-SELEcT paymentdate FROM customers.billing_payments, customers.billing_entries, customers.claim_items
-WHERE firstclaimid = 764957
-AND billing_entries.id = billing_payments.billingentryid;
+
