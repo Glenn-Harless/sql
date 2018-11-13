@@ -1,4 +1,4 @@
-
+-- GRABS BILLABLE HOURS 
 SELEcT DISTINCT billing_entries.id,
   DATEPART(month, billing_entries.dateofservice) AS month,
   DATEDIFF( second, timeworkedfrom, timeworkedto) / 3600.00 AS hours,
@@ -21,8 +21,6 @@ GROUP BY billing_entries.id, DATEPART(month, billing_entries.dateofservice), tim
 
 
 
-
-SELECT * FROM customers.billing_codes_and_labels 
 
 SELEcT 
 DISTINCT
