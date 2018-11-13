@@ -78,8 +78,6 @@ WHERE dateofservice > '2016-12-31'
 AND ca.zippostalcode < 95000
 GROUP BY MONTH, YEAR
 
-SELECT DISTINCT zippostalcode FROM customers.contact_addresses
-
 
 
 
