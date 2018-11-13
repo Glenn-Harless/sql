@@ -1,4 +1,4 @@
--- Better Claim pull from below
+-- FINDS BILLED VS OWED FOR EACH PAYER
 SELECT
 be.dateofservice, i.name, bcl.billinglabelname, SUM(be.billed) AS billed, SUM(be.paidamount) AS paid
 FROM customers.billing_entries AS be
@@ -11,8 +11,6 @@ AND be.dateofservice < '2018-06-01'
 AND (bcl.billinglabelid = 9367 OR bcl.billinglabelid = 9368)
 AND bcl.codetype = 'Billable'
 GROUP BY be.dateofservice, i.name, bcl.billinglabelname;
-
-SELECT * FROM customers.billing_codes_and_labels
 
 
 ---Pulls Claim Info from 2017 to find basic stat.model on payment time/amnt
@@ -77,8 +75,6 @@ WHERE isemployee = 0
 AND labelid = 145055 OR labelid = 145054
 
 
-SELEcT * FROM customers.contact_labels
-
 ---monthly coount of clients/providers (be.id for aosc/aowa toggle 145055 and 145044 respectively
 SELECT count(DISTINCT(fullname)),
 DATEPART(month, be.dateofservice) AS MONTH,
@@ -93,12 +89,8 @@ AND cl.labelid = 145054
 GROUP BY MONTH, YEAR
 
 
----pull attrition rate of voluntary leaving
-SELECT DISTINCT fullname, isActive FROM customers.contacts as c
-WHERE isemployee = 1
 
-
----Try and get Auth Shit
+---Try and get Auth INFO
 SELECT 
   a.id, a.clientid, c.fullname, a.frequency, a.groupauthorizedhours,
   a.groupauthorizedunits, a.groupauthorizationnumber, a.groupid,
@@ -126,13 +118,7 @@ FROM customers.authorizations AS a
     a.groupauthorizedunits, a.groupauthorizationnumber, a.groupid,
     a.grouptotalhours, a.grouptotalunits,a.billingcodeid,
     a.globalstartdate, a.globalenddate,
-    bc.code, bcl.billinglabelname
-;
-
-SELECT groupinsurancecompanyid, groupinsuranceplanid FROM customers.authorizations
-
---- for unconverted session email
---- pulls current date
+    bc.code, bcl.billinglabelname;
 
 
 
@@ -158,7 +144,7 @@ AND i.isvoid <> 0
 AND fullname <> 'Autism Outreach Southern California'
 GROUP BY i.invoiceid, c.fullname, c.email, i.invoicedate, i.dueday, i.invoicetype
 
---employee count shit is including inactive BTs
+--employee count is including inactive BTs
 SELECT COUNT(DISTINCT c.id), cl.labelname
 FROM customers.contacts AS c
 LEFT JOIN customers.contact_labels as cl
@@ -200,8 +186,9 @@ GROUP BY provider, c.email, be.clientid, client_signed, groupid
 
 SELECT * FROM customers.billing_codes_and_labels
 
---- PULL ALL PAYOR CODES HR / UNIT REF
 
+                                            
+--- PULL ALL PAYOR CODES HR / UNIT REF
 SELECT DISTINCT bl.name, bcl.code, bcl.shortdesc, bcl.minutesperunit, bcl.modifier1
 FROM customers.billing_codes_and_labels AS bcl
 LEFT JOIN customers.billing_code_labels as bl
@@ -226,22 +213,7 @@ SELECT bcl.billinglabelname, bcl.code, bcl.shortdesc FROM customers.billing_code
 WHERE bcl.billinglabelname = 'San Diego' OR bcl.billinglabelname = 'Seattle'
 
 
--- Somehow pulling deleted sessions (Kristin Young, 8,27/29/31 at 245 with Azi Lopez
-  SELECT DISTINCT c.fullname, c.email, ss.principal2, ss.segmentcode, ss.iscancelled, ss.converted, ss.isactive,
-  to_char(eventstart, 'DD Mon at HH:MI') AS dos
-  FROM customers.schedule_segments as ss
-  LEFT JOIN customers.contacts as c
-  on c.id = ss.principal1
-  WHERE CAST(ss.eventstart AS date) <= CAST(DATEADD(day, -1, GETDATE()) AS date)
-  AND CAST(ss.eventstart AS date) >= '2018-08-25'
-  AND ss.iscancelled = 0
-  AND ss.converted = 0
-  AND ss.isactive = TRUE
-  AND ss.segmentcode <> 0
-  AND c.isactive = 1
-
---- PULL THIS SHIT INTO R OR PYTHON (maybe python to practice data cleaning / agg? R would be quick and painless
---- pulls cancel data: Goal is to find kiddos with 4 months in a row of < 80% attendance conversion
+--- Pulls cancel data: Goal is to find CLIENTS with 4 months in a row of < 80% attendance conversion
 SELECT DISTINCT c.fullname, DATEPART(month, CAST(ss.eventstart AS date)) AS MONTH,
 DATEPART(year, CAST(ss.eventstart AS date)) AS YEAR,COUNT(ss.eventid),
 ss.cancellationreason, ss.cancellationtype, ss.iscancelled, ss.converted
@@ -262,7 +234,7 @@ ss.cancellationreason, ss.cancellationtype, ss.iscancelled, ss.converted
 
 
 
----- For Web App to quickly show claim periods with problems ++ add payroll data for patrick POSSIBLY
+---- For Web App to quickly show claim periods with problems ++ add payroll data for
 SELECT be.dateofservice, i.name, bcl.billinglabelname, (be.billed + be.copayamount) AS billed , 
 (be.paidamount + be.paidcopay - be.paidadjustment) AS paid,
               CAST(be.firstbilledon AS date), CAST(be.firstpaidon as date),
@@ -282,9 +254,7 @@ SELECT be.dateofservice, i.name, bcl.billinglabelname, (be.billed + be.copayamou
 
 
 
-SELECT * FROM customers.billing_codes_and_labels
---- For Patricks Model
-
+--- For COMPANY METRIC ModeL
 WITH sq AS
   (SELECT
       bcl.billingcodeid,
