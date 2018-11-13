@@ -1,7 +1,7 @@
 
 ----CPO{AY TRACK
 
---Shows all Kiddos with Copays and and how much copayments for the month
+--Shows all CLIENTS with Copays and and how much copayments for the month
 SELECT  
         DATEPART(month, billing_entries.dateofservice) AS month,
         contacts.fullname, 
@@ -18,7 +18,7 @@ SELECT
   HAVING SUM(copayamount) > 0
   ORDER BY fullname;
   
---Shows all Kiddos with OUTSTANDING Copays and and how much copayments for the month
+--Shows all CLIENTS with OUTSTANDING Copays and and how much copayments for the month
 SELECT  
         DATEPART(month, billing_entries.dateofservice) AS month,
         contacts.fullname, 
