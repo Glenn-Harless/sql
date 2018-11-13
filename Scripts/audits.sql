@@ -89,11 +89,3 @@ AND
   (be.billingcodeid <> 95037)
 GROUP BY fullname;
 
-
---- finds unconverted sessions for INACTive or ACTIVE  DOESNT WORK
-SELECT DISTINCT fullname
-FROM customers.schedule_segments AS s
-LEFT JOIN customers.contacts AS c
-ON s.principal1 = c.id
-WHERE c.isactive = 0
-AND s.segmentstart > '2018-01-01'
